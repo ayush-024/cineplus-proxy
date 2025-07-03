@@ -1,0 +1,38 @@
+{
+  "version": 2,
+  "routes": [
+    {
+      "src": "/api/proxy.php",
+      "dest": "/api/proxy.php"
+    },
+    {
+      "src": "/api/prxy-2.php", 
+      "dest": "/api/prxy-2.php"
+    },
+    {
+      "src": "/api/prxy-3.php",
+      "dest": "/api/prxy-3.php"
+    },
+    {
+      "src": "/",
+      "dest": "/index.html"
+    }
+  ],
+  "functions": {
+    "api/proxy-1.php": {
+      "runtime": "vercel-php@0.6.0",
+      "memory": 1024,
+      "maxDuration": 30
+    },
+    "api/proxy-2.php": {
+      "runtime": "vercel-php@0.6.0", 
+      "memory": 1024,
+      "maxDuration": 30
+    },
+    "api/proxy-3.php": {
+      "runtime": "vercel-php@0.6.0",
+      "memory": 1024,
+      "maxDuration": 30
+    }
+  }
+}
