@@ -1,35 +1,66 @@
 {
   "version": 2,
-  "functions": {
-    "api/proxy.php": {
-      "runtime": "vercel-php@0.6.0"
+  "builds": [
+    {
+      "src": "api/proxy.php",
+      "use": "@vercel-community/php",
+      "config": { "maxDuration": 30 }
     },
-    "api/prxy-2.php": {
-      "runtime": "vercel-php@0.6.0"
+    {
+      "src": "api/prxy-2.php",
+      "use": "@vercel-community/php",
+      "config": { "maxDuration": 30 }
     },
-    "api/prxy-3.php": {
-      "runtime": "vercel-php@0.6.0"
+    {
+      "src": "api/prxy-3.php",
+      "use": "@vercel-community/php",
+      "config": { "maxDuration": 30 }
+    },
+    {
+      "src": "index.html",
+      "use": "@vercel/static"
     }
-  },
+  ],
   "routes": [
     {
       "src": "/api/proxy.php",
-      "dest": "/api/proxy.php"
+      "dest": "/api/proxy.php",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET"
+      }
     },
     {
       "src": "/api/prxy-2.php",
-      "dest": "/api/prxy-2.php"
+      "dest": "/api/prxy-2.php",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET"
+      }
     },
     {
       "src": "/api/prxy-3.php",
-      "dest": "/api/prxy-3.php"
+      "dest": "/api/prxy-3.php",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET"
+      }
     },
     {
       "src": "/",
-      "dest": "/index.html",
-      "headers": {
-        "Content-Type": "text/html"
-      }
+      "dest": "/index.html"
+    },
+    {
+      "src": "/(.*)",
+      "status": 404,
+      "headers": { "Content-Type": "application/json" },
+      "dest": "/404.json"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/proxy/(.*)",
+      "destination": "/api/proxy.php?url=$1"
     }
   ]
 }
