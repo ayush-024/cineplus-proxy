@@ -19,17 +19,17 @@
     }
   ],
   "functions": {
-    "api/proxy-1.php": {
+    "api/proxy.php": {
       "runtime": "vercel-php@0.6.0",
       "memory": 1024,
       "maxDuration": 30
     },
-    "api/proxy-2.php": {
+    "api/prxy-2.php": {
       "runtime": "vercel-php@0.6.0", 
       "memory": 1024,
       "maxDuration": 30
     },
-    "api/proxy-3.php": {
+    "api/prxy-3.php": {
       "runtime": "vercel-php@0.6.0",
       "memory": 1024,
       "maxDuration": 30
