@@ -1,11 +1,8 @@
 import axios from 'axios';
-import { URL } from 'url';
-import querystring from 'querystring';
 
 export default async (req, res) => {
   try {
-    // Get the target URL from query parameter or use default
-    const url1 = req.query.url || encodeURIComponent("https://frostywinds73.pro/file2/pD9taokvuIgTd6~C7VzlVOfmywsz3JD2TMMYlZjabbp7iMjzk5on5G5forTdSM1t3VH74FjTqX09Sk~i5G2ye1BNPbrAy+8wBP0lvZX~~KZDlz~liznV60nIhtcVt+GvSkhVMCOsqAib45Gc1WWdLw64xZOoJOA6npybp30zUZA=/cGxheWxpc3QubTN1OA==.m3u8");
+    const url1 = req.query.url || "https://frostywinds73.pro/file2/pD9taokvuIgTd6~C7VzlVOfmywsz3JD2TMMYlZjabbp7iMjzk5on5G5forTdSM1t3VH74FjTqX09Sk~i5G2ye1BNPbrAy+8wBP0lvZX~~KZDlz~liznV60nIhtcVt+GvSkhVMCOsqAib45Gc1WWdLw64xZOoJOA6npybp30zUZA=/cGxheWxpc3QubTN1OA==.m3u8";
     
     if (!url1) {
       res.setHeader('Content-Type', 'application/json');
@@ -15,38 +12,50 @@ export default async (req, res) => {
 
     const url = decodeURIComponent(url1);
 
-    // Set headers
+    // Enhanced headers to mimic a browser
     const headers = {
       'Referer': 'https://videostr.net/',
-      'Origin': 'https://videostr.net'
+      'Origin': 'https://videostr.net',
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+      'Accept': '*/*',
+      'Accept-Language': 'en-US,en;q=0.9',
+      'Sec-Fetch-Dest': 'empty',
+      'Sec-Fetch-Mode': 'cors',
+      'Sec-Fetch-Site': 'cross-site'
     };
 
-    // Make the request
     const response = await axios.get(url, {
       headers,
       responseType: 'text',
       maxRedirects: 10,
       httpsAgent: new (require('https').Agent)({ 
         rejectUnauthorized: false 
-      })
+      }),
+      timeout: 10000
     });
 
-    // Set response headers
     res.setHeader('Content-Type', 'application/vnd.apple.mpegurl');
     res.setHeader('Accept-Ranges', 'bytes');
     res.setHeader('Cache-Control', 'no-cache, must-revalidate');
     res.setHeader('X-Accel-Buffering', 'no');
     res.setHeader('X-Content-Duration', '0');
 
-    // Modify URLs in the response
     const modifiedResponse = response.data.replace(
       /https?:\/\/[^\s]+/g,
-      match => `/?url=${encodeURIComponent(match)}`
+      match => `/2?url=${encodeURIComponent(match)}`
     );
 
     res.send(modifiedResponse);
   } catch (error) {
     console.error('Proxy error:', error);
-    res.status(500).send(`Proxy error: ${error.message}`);
+    if (error.response) {
+      // Forward the status code from the target server
+      res.status(error.response.status);
+      error.response.headers && Object.entries(error.response.headers)
+        .forEach(([key, value]) => res.setHeader(key, value));
+      res.send(error.response.data);
+    } else {
+      res.status(500).send(`Proxy error: ${error.message}`);
+    }
   }
 };
