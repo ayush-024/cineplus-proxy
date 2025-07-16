@@ -15,13 +15,7 @@ export default async (req, res) => {
     // Enhanced headers to mimic a browser
     const headers = {
       'Referer': 'https://videostr.net/',
-      'Origin': 'https://videostr.net',
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-      'Accept': '*/*',
-      'Accept-Language': 'en-US,en;q=0.9',
-      'Sec-Fetch-Dest': 'empty',
-      'Sec-Fetch-Mode': 'cors',
-      'Sec-Fetch-Site': 'cross-site'
+      'Origin': 'https://videostr.net'
     };
 
     const response = await axios.get(url, {
