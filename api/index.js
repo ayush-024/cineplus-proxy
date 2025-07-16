@@ -1,47 +1,31 @@
-import { createProxyMiddleware } from 'http-proxy-middleware';
-import https from 'https';
-import { URL } from 'url';
+import axios from 'axios';
 
 export default async (req, res) => {
-  // Extract URL from query params
-  const targetUrl = decodeURIComponent(req.query.url || 
-    "https://frostywinds73.pro/file2/pD9taokvuIgTd6~C7VzlVOfmywsz3JD2TMMYlZjabbp7iMjzk5on5G5forTdSM1t3VH74FjTqX09Sk~i5G2ye1BNPbrAy+8wBP0lvZX~~KZDlz~liznV60nIhtcVt+GvSkhVMCOsqAib45Gc1WWdLw64xZOoJOA6npybp30zUZA=/cGxheWxpc3QubTN1OA==.m3u8");
+  const DEFAULT_URL = "https://frostywinds73.pro/file2/pD9taokvuIgTd6~C7VzlVOfmywsz3JD2TMMYlZjabbp7iMjzk5on5G5forTdSM1t3VH74FjTqX09Sk~i5G2ye1BNPbrAy+8wBP0lvZX~~KZDlz~liznV60nIhtcVt+GvSkhVMCOsqAib45Gc1WWdLw64xZOoJOA6npybp30zUZA=/cGxheWxpc3QubTN1OA==.m3u8"; // Shortened for brevity
+  const targetUrl = req.query.url ? decodeURIComponent(req.query.url) : DEFAULT_URL;
 
   if (!targetUrl) {
-    res.status(400).json({ error: "No URL parameter provided" });
-    return;
+    return res.status(400).json({ error: "No URL provided" });
   }
 
-  // Set headers
   const headers = {
-    'Referer': 'https://videostr.net/',
-    'Origin': 'https://videostr.net'
+    Referer: 'https://videostr.net/',
+    Origin: 'https://videostr.net',
   };
 
-  // Helper function to modify URLs in the response
-  const modifyUrl = (url) => `2.php?url=${encodeURIComponent(url)}`;
-
   try {
-    // Fetch the target URL
-    const response = await fetch(targetUrl, { headers });
-    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-
-    let data = await response.text();
+    const response = await axios.get(targetUrl, { headers });
+    let data = response.data;
 
     // Modify all URLs in the response
-    data = data.replace(/https?:\/\/[^\s]+/g, modifyUrl);
+    data = data.replace(/https?:\/\/[^\s]+/g, (url) => `/2?url=${encodeURIComponent(url)}`);
 
-    // Set response headers
+    // Set correct headers
     res.setHeader('Content-Type', 'application/vnd.apple.mpegurl');
-    res.setHeader('Accept-Ranges', 'bytes');
-    res.setHeader('Cache-Control', 'no-cache, must-revalidate');
-    res.setHeader('X-Accel-Buffering', 'no');
-    res.setHeader('X-Content-Duration', '0');
-
-    // Send the modified response
+    res.setHeader('Cache-Control', 'no-cache');
     res.status(200).send(data);
   } catch (error) {
-    console.error('Error:', error);
+    console.error("Error:", error);
     res.status(500).json({ error: error.message });
   }
 };
