@@ -29,7 +29,7 @@ export default async (req, res) => {
     });
 
     // Set proper headers (remove application/json)
-    res.setHeader('Content-Type', 'application/vnd.apple.mpegurl');
+    res.setHeader('Content-Type', 'application/json');
     res.setHeader('Accept-Ranges', 'bytes');
     res.setHeader('Cache-Control', 'no-cache, must-revalidate');
     res.setHeader('X-Accel-Buffering', 'no');
