@@ -20,9 +20,9 @@ export default async function handler(req, res) {
     });
 
     // Forward original content-type from target
-    const contentType = response.headers.get('content-type') || 'application/octet-stream';
+    const contentType = response.headers.get('content-type') || 'application/json';
 
-    res.setHeader('Content-Type', contentType);
+    res.setHeader('Content-Type', 'application/json');
     res.setHeader('Accept-Ranges', 'bytes');
     res.setHeader('Cache-Control', 'no-cache, must-revalidate');
     res.setHeader('X-Accel-Buffering', 'no');
